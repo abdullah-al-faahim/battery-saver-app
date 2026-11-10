@@ -32,7 +32,7 @@
     <text x="277" y="180" fill="#B9D8C8" font-size="21">Even the ones Android won’t let you turn off.</text>
     <g font-size="14" font-weight="600">
       <rect x="277" y="200" width="88" height="28" rx="14" fill="#2BC883" fill-opacity=".16"/>
-      <text x="321" y="219" fill="#5FE0A5" text-anchor="middle">47 KB</text>
+      <text x="321" y="219" fill="#5FE0A5" text-anchor="middle">55 KB</text>
       <rect x="375" y="200" width="98" height="28" rx="14" fill="#2BC883" fill-opacity=".16"/>
       <text x="424" y="219" fill="#5FE0A5" text-anchor="middle">No root</text>
       <rect x="483" y="200" width="112" height="28" rx="14" fill="#2BC883" fill-opacity=".16"/>
