@@ -6,6 +6,8 @@
   <a href="https://github.com/abdullah-al-faahim/battery-saver-app/releases/latest/download/BatterySaver.apk">
     <img src="assets/download-button.svg" alt="Download Battery Saver APK" width="340">
   </a>
+  <br>
+  <a href="https://abdullah-al-faahim.github.io/battery-saver-app/"><b>🌐 Visit the website</b></a>
 </p>
 
 <p align="center">
