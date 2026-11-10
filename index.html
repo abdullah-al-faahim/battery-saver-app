@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Battery Saver for Android</title>
+<meta name="description" content="Find the apps eating your battery and stop them, even the ones Android won't let you turn off. 55 KB, no root, no internet, no ads.">
+<meta property="og:title" content="Battery Saver for Android">
+<meta property="og:description" content="Find the apps eating your battery and stop them. 55 KB, no root, no internet, no ads.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://abdullah-al-faahim.github.io/battery-saver-app/">
+<meta name="theme-color" content="#0F1A16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Crect width='108' height='108' rx='26' fill='%231E9E62'/%3E%3Cpath d='M44,32h20a4,4 0,0 1,4 4v42a4,4 0,0 1,-4 4h-20a4,4 0,0 1,-4 -4v-42a4,4 0,0 1,4 -4z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M49,25h10v5h-10z' fill='white'/%3E%3Cpath d='M57,40L46,59h7l-3,14l11,-20h-7z' fill='white'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #F4F7F5;
+    --bg2: #FFFFFF;
+    --text: #102018;
+    --text2: #4D5E55;
+    --line: #DCE5E0;
+    --accent: #1E9E62;
+    --accent2: #2BC883;
+    --accent-ink: #FFFFFF;
+    --chip: rgba(30, 158, 98, .10);
+    --hero-from: #0F1A16;
+    --hero-to: #12301F;
+    --hero-text: #FFFFFF;
+    --hero-text2: #B9D8C8;
+    --shadow: 0 10px 30px rgba(16, 32, 24, .08);
+    --high: #E5484D; --med: #E08A00; --low: #2E9E5B; --none: #8A949E;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0B110E;
+      --bg2: #131B17;
+      --text: #E9F1EC;
+      --text2: #9FB3A8;
+      --line: #23312A;
+      --chip: rgba(43, 200, 131, .12);
+      --hero-from: #08100C;
+      --hero-to: #0F2A1C;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--hero-from) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  nav .wrap { display: flex; align-items: center; gap: 12px; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 700; }
+  .brand svg { width: 30px; height: 30px; }
+  nav .links { margin-left: auto; display: flex; gap: 22px; }
+  nav .links a { color: #CFE5D9; text-decoration: none; font-size: 14px; }
+  nav .links a:hover { color: #fff; }
+  .nav-dl {
+    margin-left: 8px; padding: 7px 14px; border-radius: 999px;
+    background: var(--accent2); color: #062014; font-weight: 700; font-size: 14px; text-decoration: none;
+  }
+  @media (max-width: 720px) { nav .links { display: none; } .nav-dl { margin-left: auto; } }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: radial-gradient(900px 500px at 15% 30%, rgba(43,200,131,.22), transparent 60%),
+                linear-gradient(135deg, var(--hero-from), var(--hero-to));
+    color: var(--hero-text);
+    padding: 72px 0 84px;
+    overflow: hidden;
+  }
+  .hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+  @media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; } .phone { margin: 8px auto 0; } }
+  .eyebrow {
+    display: inline-flex; gap: 8px; align-items: center;
+    padding: 5px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    background: rgba(43,200,131,.14); color: #6FE6AF;
+  }
+  h1 { font-size: clamp(36px, 6vw, 58px); line-height: 1.05; margin: 18px 0 16px; letter-spacing: -.02em; }
+  h1 span { color: var(--accent2); }
+  .lead { color: var(--hero-text2); font-size: clamp(17px, 2.2vw, 20px); max-width: 34em; margin: 0 0 30px; }
+
+  .dl {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 14px 26px 14px 16px; border-radius: 999px;
+    background: linear-gradient(135deg, #2BC883, #168A53);
+    color: #fff; text-decoration: none;
+    box-shadow: 0 10px 28px rgba(23, 138, 83, .45), inset 0 1px 0 rgba(255,255,255,.25);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .dl:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(23, 138, 83, .55), inset 0 1px 0 rgba(255,255,255,.25); }
+  .dl:active { transform: translateY(0); }
+  .dl .ic { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; flex: none; }
+  .dl .ic svg { width: 24px; height: 24px; }
+  .dl b { display: block; font-size: 20px; line-height: 1.2; }
+  .dl small { display: block; font-size: 13px; opacity: .88; }
+  .hero-meta { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--hero-text2); font-size: 14px; }
+  .hero-meta span::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+
+  /* ---------- Phone mockup ---------- */
+  .phone {
+    width: 300px; max-width: 100%; border-radius: 40px; padding: 12px;
+    background: #050807; box-shadow: 0 30px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.08);
+    transform: rotate(2deg);
+  }
+  .screen { border-radius: 30px; overflow: hidden; background: #F3F5F7; color: #13171B; font-size: 12px; }
+  .scr-top { padding: 22px 14px 10px; font-weight: 800; font-size: 16px; }
+  .card { background: #fff; border-radius: 14px; margin: 0 12px; padding: 12px; display: flex; gap: 12px; align-items: center; }
+  .card .pct { font-size: 32px; font-weight: 800; color: #1E9E62; line-height: 1; }
+  .card .info { color: #5E6873; font-size: 11px; line-height: 1.5; }
+  .tabs { display: flex; gap: 5px; margin: 12px 12px 8px; }
+  .tabs span { flex: 1; text-align: center; padding: 6px 0; border-radius: 999px; background: #E4E9ED; font-size: 10.5px; }
+  .tabs .on { background: #1E9E62; color: #fff; }
+  .list { background: #fff; border-radius: 14px; margin: 0 12px; }
+  .row { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-bottom: 1px solid #EEF1F3; }
+  .row:last-child { border-bottom: 0; }
+  .app { width: 28px; height: 28px; border-radius: 8px; flex: none; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 13px; }
+  .row .t { flex: 1; min-width: 0; }
+  .row .t b { display: block; font-size: 12px; }
+  .row .t small { display: block; color: #5E6873; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .imp { font-size: 9.5px; color: #fff; border-radius: 8px; padding: 1px 7px; }
+  .box { width: 14px; height: 14px; border-radius: 3px; border: 2px solid #1E9E62; flex: none; }
+  .box.on { background: #1E9E62 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.3 2.3 4.7-5' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E") center/10px no-repeat; }
+  .stopbtn { margin: 10px 12px 14px; background: #1E9E62; color: #fff; text-align: center; font-weight: 700; padding: 10px; border-radius: 10px; font-size: 11.5px; letter-spacing: .02em; }
+
+  /* ---------- Sections ---------- */
+  section { padding: 84px 0; }
+  .sec-head { max-width: 640px; margin-bottom: 40px; }
+  .sec-head h2 { font-size: clamp(28px, 4vw, 38px); line-height: 1.15; margin: 0 0 12px; letter-spacing: -.01em; }
+  .sec-head p { color: var(--text2); margin: 0; font-size: 18px; }
+  .kicker { color: var(--accent); font-weight: 700; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+  .feat { background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: 24px; box-shadow: var(--shadow); }
+  .feat .fi { width: 44px; height: 44px; border-radius: 12px; background: var(--chip); display: grid; place-items: center; font-size: 22px; margin-bottom: 14px; }
+  .feat h3 { margin: 0 0 6px; font-size: 18px; }
+  .feat p { margin: 0; color: var(--text2); font-size: 15px; }
+
+  .stats { background: var(--bg2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .stats .wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding-top: 44px; padding-bottom: 44px; }
+  @media (max-width: 720px) { .stats .wrap { grid-template-columns: repeat(2, 1fr); } }
+  .stat b { display: block; font-size: clamp(28px, 4vw, 40px); color: var(--accent); letter-spacing: -.02em; line-height: 1.1; }
+  .stat span { color: var(--text2); font-size: 15px; }
+
+  /* ---------- Setup ---------- */
+  .steps-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 860px) { .steps-wrap { grid-template-columns: 1fr; } }
+  .panel { background: var(--bg2); border: 1px solid var(--line); border-radius: 20px; padding: 28px; box-shadow: var(--shadow); }
+  .panel h3 { margin: 0 0 4px; font-size: 20px; }
+  .panel .sub { color: var(--text2); margin: 0 0 18px; font-size: 15px; }
+  .tag { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: var(--chip); color: var(--accent); vertical-align: 3px; margin-left: 6px; }
+  ol.steps { list-style: none; counter-reset: s; margin: 0; padding: 0; }
+  ol.steps li { counter-increment: s; position: relative; padding: 0 0 16px 46px; }
+  ol.steps li::before {
+    content: counter(s); position: absolute; left: 0; top: 0;
+    width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 14px;
+  }
+  ol.steps li b { display: block; }
+  ol.steps li span { color: var(--text2); font-size: 15px; }
+  .note { margin-top: 18px; padding: 14px 16px; border-radius: 14px; background: var(--chip); font-size: 14.5px; }
+  .note b { color: var(--accent); }
+
+  /* ---------- FAQ ---------- */
+  .faq { max-width: 780px; }
+  details { background: var(--bg2); border: 1px solid var(--line); border-radius: 16px; padding: 4px 20px; margin-bottom: 12px; }
+  summary { cursor: pointer; font-weight: 650; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent); font-size: 22px; line-height: 1; transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { color: var(--text2); margin: 0 0 16px; }
+  code { background: var(--chip); padding: 1px 6px; border-radius: 6px; font-size: .92em; word-break: break-all; }
+
+  /* ---------- CTA + footer ---------- */
+  .cta { text-align: center; background: linear-gradient(135deg, var(--hero-from), var(--hero-to)); color: #fff; }
+  .cta h2 { font-size: clamp(28px, 4vw, 40px); margin: 0 0 10px; }
+  .cta p { color: var(--hero-text2); margin: 0 0 28px; }
+  footer { padding: 28px 0 40px; color: var(--text2); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
+  footer a { color: var(--text2); }
+  .hash { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Battery Saver home">
+      <svg viewBox="0 0 108 108" aria-hidden="true"><rect width="108" height="108" rx="26" fill="#1E9E62"/><path d="M44,32h20a4,4 0,0 1,4 4v42a4,4 0,0 1,-4 4h-20a4,4 0,0 1,-4 -4v-42a4,4 0,0 1,4 -4z" fill="none" stroke="#fff" stroke-width="4"/><path d="M49,25h10v5h-10z" fill="#fff"/><path d="M57,40L46,59h7l-3,14l11,-20h-7z" fill="#fff"/></svg>
+      Battery Saver
+    </a>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#setup">Setup</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/abdullah-al-faahim/battery-saver-app/releases">Releases</a>
+    </div>
+    <a class="nav-dl" href="https://github.com/abdullah-al-faahim/battery-saver-app/releases/latest/download/BatterySaver.apk">Download</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">⚡ Free for Android 8.0+</span>
+      <h1>Stop the apps that <span>eat your battery.</span></h1>
+      <p class="lead">Battery Saver shows which apps drain your phone and which keep running in the background. Then it puts them to sleep, even Facebook, TikTok and other apps that won't let you turn them off.</p>
+      <a class="dl" href="https://github.com/abdullah-al-faahim/battery-saver-app/releases/latest/download/BatterySaver.apk">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-5-5m5 5l5-5M5 20h14"/></svg></span>
+        <span><b>Download APK</b><small id="ver">Latest version · 55 KB</small></span>
+      </a>
+      <div class="hero-meta">
+        <span>No root</span><span>No internet permission</span><span>No ads</span><span>Any Android brand</span>
+      </div>
+    </div>
+
+    <div class="phone" aria-label="Battery Saver app screen">
+      <div class="screen">
+        <div class="scr-top">Battery Saver</div>
+        <div class="card">
+          <div class="pct">64%</div>
+          <div class="info">On battery<br>31.4 °C · 3.91 V · −412 mA<br>Health good</div>
+        </div>
+        <div class="tabs"><span class="on">Battery drain</span><span>Background</span><span>Social</span></div>
+        <div class="list">
+          <div class="row"><div class="app" style="background:#1877F2">f</div><div class="t"><b>Facebook</b><small>Screen 2h 14m · Background 5h 2m</small></div><span class="imp" style="background:var(--high)">High</span><span class="box on"></span></div>
+          <div class="row"><div class="app" style="background:#111">♪</div><div class="t"><b>TikTok</b><small>Screen 1h 40m · 12 background starts</small></div><span class="imp" style="background:var(--high)">High</span><span class="box on"></span></div>
+          <div class="row"><div class="app" style="background:#A033FF">m</div><div class="t"><b>Messenger</b><small>Background 6h 10m · Unrestricted</small></div><span class="imp" style="background:var(--med)">Medium</span><span class="box on"></span></div>
+          <div class="row"><div class="app" style="background:#25D366">w</div><div class="t"><b>WhatsApp</b><small>Screen 38m · Background 1h 3m</small></div><span class="imp" style="background:var(--med)">Medium</span><span class="box"></span></div>
+          <div class="row"><div class="app" style="background:#E1306C">i</div><div class="t"><b>Instagram</b><small>Screen 22m · Stopped</small></div><span class="imp" style="background:var(--none)">Low</span><span class="box"></span></div>
+        </div>
+        <div class="stopbtn">STOP SELECTED (3)</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">What it does</div>
+      <h2>See the drain. Stop the drain.</h2>
+      <p>Everything happens on your phone, in one simple screen.</p>
+    </div>
+    <div class="grid">
+      <div class="feat"><div class="fi">🔋</div><h3>Battery drain ranking</h3><p>Every app ranked High, Medium or Low by its screen time and background activity over the last 24 hours.</p></div>
+      <div class="feat"><div class="fi">🌙</div><h3>Background spies</h3><p>Apps that kept running services, or skipped Android's battery optimization, while you weren't using them.</p></div>
+      <div class="feat"><div class="fi">💬</div><h3>Social apps in one place</h3><p>Facebook, Messenger, Instagram, WhatsApp, TikTok, Snapchat, X, Telegram, imo, Likee, YouTube and 30+ more.</p></div>
+      <div class="feat"><div class="fi">✋</div><h3>Turn off the locked ones</h3><p>Tick apps and press Stop. Works on apps whose background switch Android greys out.</p></div>
+      <div class="feat"><div class="fi">⚡</div><h3>1-tap stop</h3><p>With the free Shizuku app, your whole list stops instantly using Android's own system command. No root.</p></div>
+      <div class="feat"><div class="fi">🛠️</div><h3>Deep restrict</h3><p>Permanently block an app from running in the background. Survives restarts and can be undone any time.</p></div>
+      <div class="feat"><div class="fi">📲</div><h3>Quick Settings tile</h3><p>Pull down the notification shade and tap <b>Stop apps</b>. No need to open the app.</p></div>
+      <div class="feat"><div class="fi">🌡️</div><h3>Battery health card</h3><p>Battery level, temperature, voltage, live current draw, health and time to full charge.</p></div>
+      <div class="feat"><div class="fi">🛡️</div><h3>Safe by design</h3><p>Play services, phone, launcher, keyboard and Settings are protected and can't be stopped by mistake.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><b>55 KB</b><span>Smaller than one photo</span></div>
+    <div class="stat"><b>0%</b><span>Battery used while idle: no background service</span></div>
+    <div class="stat"><b>0</b><span>Internet permission, trackers or ads</span></div>
+    <div class="stat"><b>8.0+</b><span>Works on any Android brand, no root</span></div>
+  </div>
+</div>
+
+<section id="setup">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Setup</div>
+      <h2>Ready in two minutes</h2>
+      <p>Install it, allow one permission, and you're done. 1-tap stop is optional.</p>
+    </div>
+    <div class="steps-wrap">
+      <div class="panel">
+        <h3>Install</h3>
+        <p class="sub">Everyone does this.</p>
+        <ol class="steps">
+          <li><b>Download the APK</b><span>Tap the green button on your phone.</span></li>
+          <li><b>Open BatterySaver.apk</b><span>If asked, allow your browser to install unknown apps.</span></li>
+          <li><b>Allow Usage access</b><span>In the app, tap Allow on the yellow banner and switch Battery Saver on.</span></li>
+          <li><b>Tick apps → Stop selected</b><span>Battery Saver opens each app's page; tap Force stop.</span></li>
+        </ol>
+        <div class="note"><b>Play Protect warning?</b> Tap <i>More details → Install anyway</i>. Google shows this for every app that isn't from the Play Store.<br><br><b>Switch greyed out?</b> Settings → Apps → Battery Saver → ⋮ → <i>Allow restricted settings</i>, then try again.</div>
+      </div>
+      <div class="panel">
+        <h3>1-tap stop <span class="tag">Optional</span></h3>
+        <p class="sub">Stop the whole list instantly, with Shizuku.</p>
+        <ol class="steps">
+          <li><b>Install Shizuku</b><span>Free and open source, <a href="https://play.google.com/store/apps/details?id=moe.shizuku.privileged.api">on the Play Store</a>.</span></li>
+          <li><b>Turn on Developer options</b><span>Settings → About phone → tap Build number 7 times.</span></li>
+          <li><b>Turn on Wireless debugging</b><span>In Developer options.</span></li>
+          <li><b>Start Shizuku</b><span>Open Shizuku → Start via Wireless debugging → Pairing, and enter the code.</span></li>
+          <li><b>Allow in Battery Saver</b><span>Tap Allow on the 1-tap stop banner. Usage access turns on automatically.</span></li>
+        </ol>
+        <div class="note">After a restart, open Shizuku and tap <b>Start</b> again.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">FAQ</div>
+      <h2>Questions</h2>
+    </div>
+    <div class="faq">
+      <details><summary>Will I still get WhatsApp or Messenger messages?</summary><p>Not while that app is stopped. Notifications come back as soon as you open it. Leave apps you need instant messages from off your stop list.</p></details>
+      <details><summary>Are the battery numbers exact?</summary><p>They're estimates. Android only gives exact per-app battery percentages to the phone maker's own system apps. Battery Saver uses screen time and background-service time, the two biggest causes of drain, to rank apps.</p></details>
+      <details><summary>What is Shizuku, and is it safe?</summary><p>Shizuku is a well-known <a href="https://github.com/RikkaApps/Shizuku">open-source</a> tool that you start yourself through Wireless debugging. It lets apps you approve run the commands a computer could run over USB. Battery Saver uses it only to force-stop apps, apply Deep restrict, and switch on its own Usage access.</p></details>
+      <details><summary>Does it need root?</summary><p>No. It works on Samsung, Xiaomi, Realme, Oppo, Vivo, Pixel, Motorola and every other Android 8.0+ phone without root.</p></details>
+      <details><summary>Does Battery Saver drain battery itself?</summary><p>No. It has no background service, no scheduled jobs and no notifications. It only works while it's open or when you tap Stop.</p></details>
+      <details><summary>How do I check the download is genuine?</summary><p>Every release is signed with the same developer key. Signing certificate SHA-256:<br><code>64:1D:B1:3A:50:68:91:65:F4:49:08:18:B9:0B:40:F9:8B:04:72:80:A3:9B:A6:EB:C0:59:5E:96:41:4B:D1:CB</code><br>Each version's file checksum is in its <a href="https://github.com/abdullah-al-faahim/battery-saver-app/releases">release notes</a>.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2>Give your battery a break.</h2>
+    <p>Free · 55 KB · No ads, ever.</p>
+    <a class="dl" href="https://github.com/abdullah-al-faahim/battery-saver-app/releases/latest/download/BatterySaver.apk">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-5-5m5 5l5-5M5 20h14"/></svg></span>
+      <span style="text-align:left"><b>Download APK</b><small id="ver2">Latest version · Android 8.0+</small></span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Made by <a href="https://github.com/abdullah-al-faahim">Abdullah Al Fahim</a></span>
+    <span><a href="https://github.com/abdullah-al-faahim/battery-saver-app/releases">All releases</a> · <a href="https://github.com/abdullah-al-faahim/battery-saver-app/issues">Report a bug</a></span>
+  </div>
+</footer>
+
+<script>
+  // Show the latest version number on the download buttons. Falls back silently.
+  fetch("https://api.github.com/repos/abdullah-al-faahim/battery-saver-app/releases/latest")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (rel) {
+      if (!rel || !rel.tag_name) return;
+      var apk = (rel.assets || []).filter(function (a) { return a.name === "BatterySaver.apk"; })[0];
+      var size = apk ? " · " + Math.round(apk.size / 1024) + " KB" : "";
+      document.getElementById("ver").textContent = "Version " + rel.tag_name.replace(/^v/, "") + size;
+      document.getElementById("ver2").textContent = "Version " + rel.tag_name.replace(/^v/, "") + " · Android 8.0+";
+    })
+    .catch(function () {});
+</script>
+</body>
+</html>
